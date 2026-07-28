@@ -14,7 +14,9 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json());
 
-app.get("/api/health", (req, res) => res.json({ success: true, message: "API is healthy" }));
+app.get("/api/health", (req, res) =>
+  res.json({ success: true, message: "API is TEsting healthy" }),
+);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoryRoutes);
