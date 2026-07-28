@@ -34,7 +34,6 @@ app.get("/github-webhook", (req, res) => {
 
   bashChildProcess.on("error", (err) => {
     res.json({ message: "OK" });
-
     console.log("Error in spawning the process.");
     console.log(err);
   });
