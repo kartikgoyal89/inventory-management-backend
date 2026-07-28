@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import { spawn } from "child_process";
 
 import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -24,6 +25,37 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+
+app.post("/github-webhook", (req, res) => {
+  console.log(req.headers);
+  console.log(req.body);
+
+  const bashChildProcess = spawn("bash", ["/home/ubuntu/script.sh"]);
+
+  bashChildProcess.stdout.on("data", (data) => {
+    console.log("Got stdout data");
+    process.stdout.write(data);
+  });
+
+  bashChildProcess.stderr.on("data", (data) => {
+    process.stdout.write(data);
+  });
+
+  bashChildProcess.on("close", (code) => {
+    res.json({ message: "OK" });
+    if (code === 0) {
+      console.log("Script Executed Succesfully!");
+    } else {
+      console.log("Script Failed!");
+    }
+  });
+
+  bashChildProcess.on("error", (err) => {
+    res.json({ message: "OK" });
+    console.log("Error in spawning the process.");
+    console.log(err);
+  });
+});
 
 app.use(notFound);
 app.use(errorHandler);
