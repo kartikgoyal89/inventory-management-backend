@@ -7,6 +7,7 @@ import { spawn } from "child_process";
 
 const PORT = process.env.PORT;
 
+console.log("Calling github webhook");
 app.post("/github-webhook", (req, res) => {
   console.log(req.headers);
   console.log(req.body);
