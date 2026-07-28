@@ -31,7 +31,7 @@ app.post("/github-webhook", (req, res) => {
   console.log(req.body);
 
   const bashChildProcess = spawn("bash", [
-    "/home/ubuntu/inventory-management-backend/script.sh",
+    "/home/ubuntu/inventory-management-frontend/deploy-frontend.sh",
   ]);
 
   bashChildProcess.stdout.on("data", (data) => {
