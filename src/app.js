@@ -27,8 +27,10 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 app.post("/github-webhook", (req, res) => {
-  console.log(req.headers);
+  // console.log(req.headers);
   console.log(req.body);
+
+  res.status(200).send("Webhook received");
 
   const bashChildProcess = spawn("bash", [
     "/home/ubuntu/inventory-management-frontend/deploy-frontend.sh",
