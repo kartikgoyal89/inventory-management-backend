@@ -24,6 +24,10 @@ app.post(
     console.log("GitHub signature:", givenSignature);
     console.log("Is Buffer:", Buffer.isBuffer(req.body));
 
+    console.log("Content-Type:", req.headers["content-type"]);
+    console.log("Is Buffer:", Buffer.isBuffer(req.body));
+    console.log("Body length:", req.body?.length);
+
     if (!givenSignature) {
       return res.status(403).json({
         error: "Invalid Signature",
