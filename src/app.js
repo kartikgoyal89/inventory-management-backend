@@ -29,7 +29,7 @@ app.use("/api/dashboard", dashboardRoutes);
 
 app.post("/github-webhook", (req, res) => {
   // console.log(req.headers);
-  // console.log(req.body);
+  console.log(req.body);
 
   const givenSignature = req.headers["x-hub-signature-256"];
   console.log(givenSignature);
