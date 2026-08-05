@@ -28,9 +28,26 @@ app.use("/api/dashboard", dashboardRoutes);
 
 app.post("/github-webhook", (req, res) => {
   // console.log(req.headers);
-  console.log(req.body);
+  // console.log(req.body);
 
-  res.status(200).send("Webhook received");
+  const givenSignature = req.headers["x-hub-signature-256"];
+
+  if (!givenSignature) {
+    return res.status(403).json({ error: "Invalid Signature" });
+  }
+
+  const calculatedSignature =
+    "sha256=" +
+    crypto
+      .createHmac("sha256", "kartik@123")
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+
+  if (givenSignature !== calculatedSignature) {
+    return res.status(403).json({ error: "Invalid Signature" });
+  }
+
+  res.json({ message: "OK" });
 
   const bashChildProcess = spawn("bash", [
     "/home/ubuntu/inventory-management-frontend/deploy-frontend.sh",
