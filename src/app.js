@@ -8,6 +8,7 @@ import supplierRoutes from "./routes/supplierRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
+import crypto from "crypto";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
