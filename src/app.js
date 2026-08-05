@@ -29,10 +29,8 @@ app.use("/api/dashboard", dashboardRoutes);
 
 app.post("/github-webhook", (req, res) => {
   // console.log(req.headers);
-  console.log(req.body);
 
   const givenSignature = req.headers["x-hub-signature-256"];
-  console.log(givenSignature);
 
   if (!givenSignature) {
     return res.status(403).json({ error: "Invalid Signature" });
@@ -45,16 +43,22 @@ app.post("/github-webhook", (req, res) => {
       .update(JSON.stringify(req.body))
       .digest("hex");
 
-  console.log(calculatedSignature);
-
   if (givenSignature !== calculatedSignature) {
     return res.status(403).json({ error: "Invalid Signature" });
   }
 
   res.json({ message: "OK" });
 
+  let repository;
+
+  if (req.body.repository.name === "inventory-management-backend") {
+    repository = "backend";
+  } else {
+    repository = "frontend";
+  }
+
   const bashChildProcess = spawn("bash", [
-    "/home/ubuntu/inventory-management-frontend/deploy-frontend.sh",
+    `/home/ubuntu/inventory-management-${repository}/deploy-${repository}.sh`,
   ]);
 
   bashChildProcess.stdout.on("data", (data) => {
