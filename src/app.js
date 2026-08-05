@@ -16,11 +16,9 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 
 app.post("/github-webhook", express.raw({ type: "text/plain" }), (req, res) => {
-  console.log("Content-Type:", req.headers["content-type"]);
-  console.log("Is Buffer:", Buffer.isBuffer(req.body));
-  console.log("Body length:", req.body?.length);
-
   const givenSignature = req.headers["x-hub-signature-256"];
+
+  console.log("req.body", req.body);
 
   if (!givenSignature) {
     return res.status(403).json({
