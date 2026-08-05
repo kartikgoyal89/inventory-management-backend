@@ -14,57 +14,7 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
-
-app.post("/github-webhook", express.raw({ type: "text/plain" }), (req, res) => {
-  const givenSignature = req.headers["x-hub-signature-256"];
-
-  console.log("req.body", req.body);
-
-  if (!givenSignature) {
-    return res.status(403).json({
-      error: "Invalid Signature",
-    });
-  }
-
-  const calculatedSignature =
-    "sha256=" +
-    crypto.createHmac("sha256", "kartik@123").update(req.body).digest("hex");
-
-  console.log("GitHub signature:", givenSignature);
-  console.log("Calculated signature:", calculatedSignature);
-
-  if (givenSignature !== calculatedSignature) {
-    return res.status(403).json({
-      error: "Invalid Signature",
-    });
-  }
-
-  res.status(200).json({
-    message: "OK",
-  });
-
-  const bashChildProcess = spawn("bash", [
-    "/home/ubuntu/inventory-management-frontend/deploy-frontend.sh",
-  ]);
-
-  bashChildProcess.stdout.on("data", (data) => {
-    process.stdout.write(data);
-  });
-
-  bashChildProcess.stderr.on("data", (data) => {
-    process.stdout.write(data);
-  });
-
-  bashChildProcess.on("close", (code) => {
-    console.log(
-      code === 0 ? "Script Executed Successfully!" : "Script Failed!",
-    );
-  });
-
-  bashChildProcess.on("error", (err) => {
-    console.error("Error in spawning process:", err);
-  });
-});
+app.use(express.json());
 
 app.get("/api/health", (req, res) =>
   res.json({ success: true, message: "API is TEsting healthy" }),
@@ -77,7 +27,58 @@ app.use("/api/products", productRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-app.use(express.json());
+app.post("/github-webhook", (req, res) => {
+  // console.log(req.headers);
+  // console.log(req.body);
+
+  const givenSignature = req.headers["x-hub-signature-256"];
+  console.log(givenSignature);
+
+  if (!givenSignature) {
+    return res.status(403).json({ error: "Invalid Signature" });
+  }
+
+  const calculatedSignature =
+    "sha256=" +
+    crypto
+      .createHmac("sha256", "kartik@123")
+      .update(JSON.stringify(req.body))
+      .digest("hex");
+
+  console.log(calculatedSignature);
+
+  if (givenSignature !== calculatedSignature) {
+    return res.status(403).json({ error: "Invalid Signature" });
+  }
+
+  res.json({ message: "OK" });
+
+  const bashChildProcess = spawn("bash", [
+    "/home/ubuntu/inventory-management-frontend/deploy-frontend.sh",
+  ]);
+
+  bashChildProcess.stdout.on("data", (data) => {
+    console.log("Got stdout data");
+    process.stdout.write(data);
+  });
+
+  bashChildProcess.stderr.on("data", (data) => {
+    process.stdout.write(data);
+  });
+
+  bashChildProcess.on("close", (code) => {
+    if (code === 0) {
+      console.log("Script Executed Succesfully!");
+    } else {
+      console.log("Script Failed!");
+    }
+  });
+
+  bashChildProcess.on("error", (err) => {
+    console.log("Error in spawning the process.");
+    console.log(err);
+  });
+});
 
 app.use(notFound);
 app.use(errorHandler);
