@@ -15,17 +15,6 @@ const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 
-app.get("/api/health", (req, res) =>
-  res.json({ success: true, message: "API is TEsting healthy" }),
-);
-
-app.use("/api/auth", authRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/suppliers", supplierRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/transactions", transactionRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-
 app.post("/github-webhook", (req, res) => {
   // console.log(req.headers);
   // console.log(req.body);
@@ -78,6 +67,17 @@ app.post("/github-webhook", (req, res) => {
     console.log(err);
   });
 });
+
+app.get("/api/health", (req, res) =>
+  res.json({ success: true, message: "API is TEsting healthy" }),
+);
+
+app.use("/api/auth", authRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/suppliers", supplierRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/transactions", transactionRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use(express.json());
 
