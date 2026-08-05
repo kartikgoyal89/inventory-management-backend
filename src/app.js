@@ -63,7 +63,6 @@ app.post("/github-webhook", (req, res) => {
   });
 
   bashChildProcess.on("close", (code) => {
-    res.json({ message: "OK" });
     if (code === 0) {
       console.log("Script Executed Succesfully!");
     } else {
@@ -72,7 +71,6 @@ app.post("/github-webhook", (req, res) => {
   });
 
   bashChildProcess.on("error", (err) => {
-    res.json({ message: "OK" });
     console.log("Error in spawning the process.");
     console.log(err);
   });
