@@ -14,7 +14,6 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
-app.use(express.json());
 
 app.get("/api/health", (req, res) =>
   res.json({ success: true, message: "API is TEsting healthy" }),
@@ -79,6 +78,8 @@ app.post("/github-webhook", (req, res) => {
     console.log(err);
   });
 });
+
+app.use(express.json());
 
 app.use(notFound);
 app.use(errorHandler);
