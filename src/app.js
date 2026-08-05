@@ -17,7 +17,7 @@ app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json());
 
 app.get("/api/health", (req, res) =>
-  res.json({ success: true, message: "API is TEsting healthy CI/CD" }),
+  res.json({ success: true, message: "API is TEsting healthy CI/CD Setup" }),
 );
 
 app.use("/api/auth", authRoutes);
