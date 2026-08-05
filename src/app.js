@@ -45,6 +45,8 @@ app.post("/github-webhook", (req, res) => {
       .update(JSON.stringify(req.body))
       .digest("hex");
 
+  console.log(calculatedSignature);
+
   if (givenSignature !== calculatedSignature) {
     return res.status(403).json({ error: "Invalid Signature" });
   }
